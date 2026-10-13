@@ -1,1 +1,988 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ICS CS Interactive HUB — Grade 1</title><style>body{font-family:system-ui,Arial;background:#f3f8fc;color:#15324c;margin:0}header{background:#083c65;color:white;padding:22px;text-align:center}header img{width:92px;height:92px;object-fit:contain;background:white;border-radius:50%;padding:6px}main{max-width:980px;margin:auto;padding:18px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card,.panel{background:white;border-radius:16px;padding:20px;margin:12px 0;box-shadow:0 3px 12px #15324c18}.tip{background:#e5f5eb;padding:10px;border-radius:9px}button{background:#075a89;color:white;border:0;border-radius:12px;padding:13px 18px;cursor:pointer;font-size:1rem;margin:5px}button:hover,button:focus{outline:3px solid #eab54b}.option{display:block;width:100%;text-align:left;background:#e9f3fc;color:#123}.selected{background:#ffdb86}#feedback{font-weight:bold}.muted{color:#52677a}nav a{color:white;margin:0 10px}.bar{height:12px;background:#dce8ef;border-radius:20px;overflow:hidden}#fill{height:100%;background:#36a879;width:0}@media(max-width:500px){header h1{font-size:1.4rem}}</style></head><body><header><img src="ics_logo.png" alt="International Community Schools Khalifa City logo"><h1>ICS CS Interactive HUB</h1><h2>Grade 1 • Revision Adventure</h2><nav><a href="#learn">Learn</a><a href="#quiz">Sample Quiz</a><a href="#safety">Safety</a></nav></header><main><section class="panel" id="safety"><h2>🛡️ Stay safe</h2><p>Think first. Never type your name, password, email, or other personal information here. Ask your teacher or a trusted adult when unsure. This website works offline and does not send answers anywhere.</p></section><section id="learn"><h2>🌟 Learn and practise</h2><p>Read the simple skill cards, say the answer aloud, then try the sample quiz. You can retry as often as you like.</p><div class="cards"><article class="card"><span>⭐ Skill 1</span><h3>Identify common computing devices</h3><p>Think about: Which one is a computing device?</p><p class="tip">Remember: Laptop</p></article><article class="card"><span>⭐ Skill 2</span><h3>Identify common computing devices</h3><p>Think about: Which device fits in a pocket?</p><p class="tip">Remember: Smartphone</p></article><article class="card"><span>⭐ Skill 3</span><h3>Recognize computer parts</h3><p>Think about: What do we use to type letters?</p><p class="tip">Remember: Keyboard</p></article><article class="card"><span>⭐ Skill 4</span><h3>Recognize computer parts</h3><p>Think about: Which part shows pictures?</p><p class="tip">Remember: Monitor</p></article><article class="card"><span>⭐ Skill 5</span><h3>Recognize computer parts</h3><p>Think about: What helps move the pointer?</p><p class="tip">Remember: Mouse</p></article><article class="card"><span>⭐ Skill 6</span><h3>Recognize computer parts</h3><p>Think about: Which part plays sound?</p><p class="tip">Remember: Speakers</p></article><article class="card"><span>⭐ Skill 7</span><h3>Handle devices safely</h3><p>Think about: What should you keep away from a computer?</p><p class="tip">Remember: Water</p></article><article class="card"><span>⭐ Skill 8</span><h3>Handle devices safely</h3><p>Think about: How should you carry a tablet?</p><p class="tip">Remember: Carefully with two hands</p></article><article class="card"><span>⭐ Skill 9</span><h3>Use devices safely</h3><p>Think about: Before cleaning a device, what should you do?</p><p class="tip">Remember: Ask an adult</p></article><article class="card"><span>⭐ Skill 10</span><h3>Use devices safely</h3><p>Think about: What is the best way to switch off a computer?</p><p class="tip">Remember: Use the correct Shut down option</p></article></div></section><section id="quiz" class="panel"><h2>🎯 10-question practice quiz</h2><p class="muted">Similar skills to the unit test, with practice wording. 2 points each.</p><div class="bar"><div id="fill"></div></div><p id="progress" aria-live="polite"></p><h3 id="question"></h3><div id="answers"></div><p id="feedback" aria-live="polite"></p><button id="next" onclick="nextQ()" disabled>Next question →</button><button onclick="restart()">↻ Restart</button><p id="result" aria-live="polite"></p></section><footer><p>ICS Khalifa City • Teacher: Khawla Banydomi • Revision practice only</p></footer></main><script>const questions=[{"q": "Practice situation 1: Choose: which one is a computing device?", "opts": ["Laptop", "Spoon", "Chair"], "answer": 0, "obj": "Identify common computing devices"}, {"q": "Practice situation 2: Choose: which device fits in a pocket?", "opts": ["Desktop", "Smartphone", "Printer"], "answer": 1, "obj": "Identify common computing devices"}, {"q": "Practice situation 3: Choose: what do we use to type letters?", "opts": ["Keyboard", "Screen", "Speaker"], "answer": 0, "obj": "Recognize computer parts"}, {"q": "Practice situation 4: Choose: which part shows pictures?", "opts": ["Mouse", "Monitor", "Microphone"], "answer": 1, "obj": "Recognize computer parts"}, {"q": "Practice situation 5: Choose: what helps move the pointer?", "opts": ["Printer", "Mouse", "Speaker"], "answer": 1, "obj": "Recognize computer parts"}, {"q": "Practice situation 6: Choose: which part plays sound?", "opts": ["Keyboard", "Speakers", "Webcam"], "answer": 1, "obj": "Recognize computer parts"}, {"q": "Practice situation 7: Choose: what should you keep away from a computer?", "opts": ["Water", "Dry hands", "Clean desk"], "answer": 0, "obj": "Handle devices safely"}, {"q": "Practice situation 8: Choose: how should you carry a tablet?", "opts": ["Carefully with two hands", "By the cable", "While running"], "answer": 0, "obj": "Handle devices safely"}, {"q": "Practice situation 9: Before cleaning a device, what should you do?", "opts": ["Ask an adult", "Pour water on it", "Hit the keys"], "answer": 0, "obj": "Use devices safely"}, {"q": "Practice situation 10: Choose: what is the best way to switch off a computer?", "opts": ["Use the correct Shut down option", "Pull the cable", "Close the screen hard"], "answer": 0, "obj": "Use devices safely"}];let idx=0,score=0,selected=null;function show(){document.getElementById('result').textContent='';document.getElementById('progress').textContent='Question '+(idx+1)+' of '+questions.length+' • Score '+score+'/20';document.getElementById('fill').style.width=(idx/questions.length*100)+'%';document.getElementById('question').textContent=questions[idx].q;const area=document.getElementById('answers');area.innerHTML='';questions[idx].opts.forEach((x,j)=>{const b=document.createElement('button');b.className='option';b.textContent=String.fromCharCode(65+j)+'. '+x;b.onclick=()=>choose(j);area.appendChild(b)});document.getElementById('feedback').textContent='';document.getElementById('next').disabled=true;selected=null}function choose(j){if(selected!==null)return;selected=j;let good=j===questions[idx].answer;if(good)score+=2;document.getElementById('feedback').textContent=good?'🌟 Correct! Well done.':'💡 Good try! Correct answer: '+questions[idx].opts[questions[idx].answer];[...document.querySelectorAll('.option')].forEach((b,k)=>{b.disabled=true;if(k===questions[idx].answer)b.style.background='#b8ecc9'});document.getElementById('next').disabled=false}function nextQ(){if(selected===null)return;idx++;if(idx===questions.length){document.getElementById('fill').style.width='100%';document.getElementById('progress').textContent='Completed!';document.getElementById('question').textContent='🎉 Great effort!';document.getElementById('answers').innerHTML='';document.getElementById('feedback').textContent='';document.getElementById('next').disabled=true;document.getElementById('result').textContent='Your score: '+score+' / 20. You can restart to practise again.'}else show()}function restart(){idx=0;score=0;show()}show();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ICS CS Interactive HUB — Grade 1</title>
+  <style>
+    :root {
+      --blue-900: #083c65;
+      --blue-700: #0b4f88;
+      --blue-500: #3b82f6;
+      --sky: #e7f4ff;
+      --mint: #dffbe8;
+      --yellow: #ffe08a;
+      --orange: #ffb84d;
+      --pink: #ffd7e7;
+      --red: #df6d6d;
+      --green: #6dbd7a;
+      --panel: #ffffff;
+      --ink: #15324c;
+      --muted: #52677a;
+      --shadow: 0 3px 12px rgba(21, 50, 76, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: system-ui, Arial, sans-serif;
+      background: #f3f8fc;
+      color: var(--ink);
+    }
+
+    header {
+      background: var(--blue-900);
+      color: white;
+      padding: 22px 18px;
+      text-align: center;
+    }
+
+    header img {
+      width: 92px;
+      height: 92px;
+      object-fit: contain;
+      background: white;
+      border-radius: 50%;
+      padding: 6px;
+      display: block;
+      margin: 0 auto 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      letter-spacing: 0.04em;
+    }
+
+    h2 {
+      margin: 8px 0 0;
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 600;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 999px;
+      transition: background 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a:focus-visible {
+      background: rgba(255,255,255,0.14);
+      outline: none;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 12px 0;
+      box-shadow: var(--shadow);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      border: 2px solid #e6edf3;
+      box-shadow: 0 8px 18px rgba(21, 50, 76, 0.06);
+    }
+
+    .card span {
+      display: inline-block;
+      background: #e5f5eb;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      font-weight: 800;
+      color: var(--blue-900);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.3rem;
+    }
+
+    .card p,
+    .card .tip {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .tip {
+      background: #eef7ff;
+      color: #123a5a;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 12px;
+      font-weight: 700;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .bar {
+      height: 12px;
+      background: #dce8ef;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    #fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #82d5ff, #7fc97a, #ffd55d);
+      border-radius: 20px;
+      transition: width 0.35s ease;
+    }
+
+    #progress {
+      margin: 10px 0 0;
+      font-weight: 700;
+      color: #20476c;
+    }
+
+    #question {
+      margin: 18px 0 16px;
+      font-size: clamp(1.15rem, 2vw, 1.6rem);
+      color: #1e3d5f;
+    }
+
+    #answers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .option {
+      border: 2px solid #d0e2ef;
+      background: #fbfdff;
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .option:hover,
+    .option:focus-visible {
+      transform: translateY(-1px);
+      border-color: var(--blue-500);
+      box-shadow: 0 8px 18px rgba(59,130,246,0.12);
+      outline: none;
+    }
+
+    .option:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+
+    .option.correct {
+      background: #dffce9;
+      border-color: #52a868;
+      color: #14552e;
+    }
+
+    .option.incorrect {
+      background: #ffe1e1;
+      border-color: #d26c6c;
+      color: #7a2d2d;
+    }
+
+    #feedback {
+      min-height: 28px;
+      font-weight: 700;
+      margin-top: 12px;
+      color: #1f4b73;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      align-items: center;
+    }
+
+    button.primary,
+    button.secondary {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button.primary {
+      background: var(--blue-700);
+      color: white;
+    }
+
+    button.secondary {
+      background: #e4ecf5;
+      color: var(--ink);
+    }
+
+    button.primary:hover:not(:disabled),
+    button.secondary:hover:not(:disabled),
+    button.primary:focus-visible:not(:disabled),
+    button.secondary:focus-visible:not(:disabled) {
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    #result {
+      font-weight: 800;
+      color: #1d4d74;
+      margin-left: auto;
+    }
+
+    footer {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 10px 18px 28px;
+      color: #2f4968;
+      text-align: center;
+    }
+
+    footer p {
+      margin: 0;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .learning-buddy {
+      position: fixed;
+      right: 18px;
+      bottom: 16px;
+      width: min(240px, calc(100vw - 26px));
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .buddy-speech {
+      pointer-events: auto;
+      max-width: 200px;
+      background: #fff4bd;
+      border: 2px solid #f0d768;
+      color: #173c63;
+      border-radius: 18px;
+      padding: 10px 12px;
+      font-weight: 700;
+      line-height: 1.35;
+      box-shadow: 0 12px 18px rgba(20, 48, 77, 0.16);
+      position: relative;
+      text-align: center;
+    }
+
+    .buddy-speech::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+      width: 18px;
+      height: 18px;
+      background: #fff4bd;
+      border-left: 2px solid #f0d768;
+      border-bottom: 2px solid #f0d768;
+      transform: translateX(-50%) rotate(-45deg);
+    }
+
+    .robot-wrap {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .robot {
+      position: relative;
+      width: 145px;
+      height: 170px;
+      filter: drop-shadow(0 12px 18px rgba(91, 122, 165, 0.28));
+      animation: floaty 4.8s ease-in-out infinite;
+    }
+
+    .robot .antenna {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 6px;
+      height: 24px;
+      background: #7aa4ff;
+      border-radius: 6px;
+      transform: translateX(-50%);
+    }
+
+    .robot .antenna::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -10px;
+      width: 12px;
+      height: 12px;
+      background: #ffd764;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px rgba(255, 214, 100, 0.7);
+    }
+
+    .robot .head {
+      position: absolute;
+      left: 50%;
+      top: 20px;
+      width: 92px;
+      height: 72px;
+      background: linear-gradient(180deg, #f4f9ff, #dcecff);
+      border: 4px solid #9bb2ff;
+      border-radius: 24px;
+      transform: translateX(-50%);
+      box-shadow: inset 0 -8px 0 rgba(140, 176, 255, 0.18);
+    }
+
+    .robot .ear {
+      position: absolute;
+      top: 46px;
+      width: 12px;
+      height: 18px;
+      background: #9ec0ff;
+      border-radius: 10px;
+    }
+
+    .robot .ear.left { left: 16px; }
+    .robot .ear.right { right: 16px; }
+
+    .robot .eye {
+      position: absolute;
+      top: 42px;
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(180deg, #fff, #c8e5ff);
+      border-radius: 50%;
+      border: 3px solid #5d7db9;
+      animation: blink 5.4s infinite ease-in-out;
+    }
+
+    .robot .eye::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 5px;
+      width: 6px;
+      height: 6px;
+      background: #1f305a;
+      border-radius: 50%;
+    }
+
+    .robot .eye.left { left: 30px; }
+    .robot .eye.right { right: 30px; }
+
+    .robot .smile {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      width: 32px;
+      height: 18px;
+      border-bottom: 4px solid #5d7db9;
+      border-radius: 0 0 30px 30px;
+      transform: translateX(-50%);
+      animation: smile 4s ease-in-out infinite;
+    }
+
+    .robot .body {
+      position: absolute;
+      left: 50%;
+      top: 92px;
+      width: 104px;
+      height: 68px;
+      background: linear-gradient(180deg, #fce9ff, #d7ecff);
+      border: 4px solid #99b4ff;
+      border-radius: 26px;
+      transform: translateX(-50%);
+    }
+
+    .robot .body::before,
+    .robot .body::after {
+      content: "";
+      position: absolute;
+      top: 18px;
+      width: 12px;
+      height: 22px;
+      background: #ffe595;
+      border-radius: 12px;
+    }
+
+    .robot .body::before { left: 18px; }
+    .robot .body::after { right: 18px; }
+
+    .robot .arm {
+      position: absolute;
+      top: 96px;
+      width: 18px;
+      height: 72px;
+      background: linear-gradient(180deg, #b5d0ff, #8baef3);
+      border-radius: 16px;
+      transform-origin: top center;
+      animation: wave 3.2s ease-in-out infinite;
+    }
+
+    .robot .arm.left {
+      left: 16px;
+      transform: rotate(24deg);
+    }
+
+    .robot .arm.right {
+      right: 16px;
+      transform: rotate(-24deg);
+      animation-delay: 0.25s;
+    }
+
+    .robot .leg {
+      position: absolute;
+      bottom: 0;
+      width: 18px;
+      height: 34px;
+      background: #9fb9ff;
+      border-radius: 14px;
+    }
+
+    .robot .leg.left { left: 42px; }
+    .robot .leg.right { right: 42px; }
+
+    .buddy-progress {
+      pointer-events: auto;
+      width: 100%;
+      margin-top: 10px;
+      background: rgba(255,255,255,0.82);
+      border-radius: 16px;
+      padding: 10px 12px 12px;
+      box-shadow: 0 10px 18px rgba(18, 52, 77, 0.12);
+      border: 1px solid rgba(104, 136, 179, 0.16);
+    }
+
+    .Buddy-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #2d4a6d;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .buddy-progress-bar {
+      height: 12px;
+      background: #dfe9f5;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .buddy-progress-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #8fd1ff, #73dba0, #ffdb67);
+      border-radius: inherit;
+      transition: width 0.3s ease;
+    }
+
+    .buddy-progress-value {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #28557d;
+      text-align: center;
+    }
+
+    .sound-toggle {
+      pointer-events: auto;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 999px;
+      background: #d9eaff;
+      color: #1f4472;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 8px 14px rgba(42, 76, 117, 0.15);
+    }
+
+    .sparkles {
+      position: absolute;
+      pointer-events: none;
+      inset: 0;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: radial-gradient(circle, #fff7b3, #ffd76a 60%, transparent 62%);
+      clip-path: polygon(50% 0%, 61% 38%, 100% 50%, 61% 62%, 50% 100%, 39% 62%, 0% 50%, 39% 38%);
+      animation: sparkle 1.2s ease-in-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(22deg); }
+      50% { transform: rotate(58deg); }
+    }
+
+    @keyframes blink {
+      0%, 45%, 49%, 100% { transform: scaleY(1); }
+      46%, 48% { transform: scaleY(0.18); }
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes sparkle {
+      0% { opacity: 0; transform: translateY(0) scale(0.5) rotate(0deg); }
+      18% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-26px) scale(1.2) rotate(18deg); }
+    }
+
+    @keyframes smile {
+      0%, 100% { transform: translateX(-50%) scaleY(1); }
+      50% { transform: translateX(-50%) scaleY(1.2); }
+    }
+
+    @media (max-width: 700px) {
+      main {
+        padding: 12px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .learning-buddy {
+        position: static;
+        width: 100%;
+        margin: 10px auto 0;
+      }
+
+      .buddy-speech {
+        max-width: 100%;
+      }
+
+      .robot-wrap {
+        margin-top: 10px;
+      }
+
+      #answers {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="ics_logo.png" alt="International Community Schools Khaleefa City logo">
+    <h1>ICS CS Interactive HUB</h1>
+    <h2>Grade 1 — Revision Adventure</h2>
+    <nav>
+      <a href="#learn">Learn</a>
+      <a href="#quiz">Sample Quiz</a>
+      <a href="#safety">Safety</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel" id="safety">
+      <h2>🛡️ Stay safe</h2>
+      <p>Think first. Never type your name, password, email, or other personal information here. Ask your teacher or a trusted adult when unsure. This website works offline and does not send answers anywhere.</p>
+    </section>
+
+    <section id="learn">
+      <h2>📚 Learn and practise</h2>
+      <p>Read the simple skill cards, say the answer aloud, then try the sample quiz. You can retry as often as you like.</p>
+      <div class="cards">
+        <article class="card">
+          <span>Skill 1</span>
+          <h3>Identify common computing devices</h3>
+          <p>Think about: Which one is a computing device?</p>
+          <p class="tip">Remember: Laptop</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 2</span>
+          <h3>Identify common computing devices</h3>
+          <p>Think about: Which device fits in a pocket?</p>
+          <p class="tip">Remember: Smartphone</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 3</span>
+          <h3>Recognise computer parts</h3>
+          <p>Think about: What do we use to type letters?</p>
+          <p class="tip">Remember: Keyboard</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 4</span>
+          <h3>Recognise computer parts</h3>
+          <p>Think about: Which part shows pictures?</p>
+          <p class="tip">Remember: Monitor</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 5</span>
+          <h3>Recognise computer parts</h3>
+          <p>Think about: What helps move the pointer?</p>
+          <p class="tip">Remember: Mouse</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 6</span>
+          <h3>Recognise computer parts</h3>
+          <p>Think about: Which part plays sound?</p>
+          <p class="tip">Remember: Speakers</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 7</span>
+          <h3>Handle devices safely</h3>
+          <p>Think about: What should you keep away from a computer?</p>
+          <p class="tip">Remember: Water</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 8</span>
+          <h3>Handle devices safely</h3>
+          <p>Think about: How should you carry a tablet?</p>
+          <p class="tip">Remember: Carefully with two hands</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 9</span>
+          <h3>Use devices safely</h3>
+          <p>Think about: Before cleaning a device, what should you do?</p>
+          <p class="tip">Remember: Ask an adult</p>
+        </article>
+
+        <article class="card">
+          <span>Skill 10</span>
+          <h3>Use devices safely</h3>
+          <p>Think about: What is the best way to switch off a computer?</p>
+          <p class="tip">Remember: Use the correct Shut down option</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="quiz" class="panel">
+      <h2>🧪 10-question practice quiz</h2>
+      <p class="muted">Similar skills to the unit test, with practice wording. 2 points each.</p>
+      <div class="bar"><div id="fill"></div></div>
+      <p id="progress">Question 1 of 10 • Score 0/20</p>
+      <h3 id="question"></h3>
+      <div id="answers"></div>
+      <p id="feedback" aria-live="polite"></p>
+      <div class="controls">
+        <button id="next" class="primary" disabled>Next question ➜</button>
+        <button id="restart" class="secondary" type="button">Restart</button>
+        <span id="result" aria-live="polite"></span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>ICS Khalifa City — Teacher: Khawla Banydomi — Revision practice only</p>
+  </footer>
+
+  <div class="learning-buddy" aria-live="polite" aria-label="AI Learning Buddy">
+    <div id="buddy-speech" class="buddy-speech">Hello, Little AI Explorer! Let's learn together!</div>
+    <div class="robot-wrap">
+      <div class="robot" aria-hidden="true">
+        <div class="antenna"></div>
+        <div class="head">
+          <div class="ear left"></div>
+          <div class="ear right"></div>
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="smile"></div>
+        </div>
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+        <div class="body"></div>
+        <div class="leg left"></div>
+        <div class="leg right"></div>
+        <div class="sparkles" id="sparkles"></div>
+      </div>
+      <div class="buddy-progress" aria-label="Learning progress">
+        <div class="Buddy-label">
+          <span>Stars</span>
+          <span id="buddy-progress-text">0%</span>
+        </div>
+        <div class="buddy-progress-bar">
+          <span id="buddy-progress-fill" class="buddy-progress-fill"></span>
+        </div>
+        <div class="buddy-progress-value"><span id="buddy-stars">0</span> / 10 correct</div>
+      </div>
+      <button id="sound-toggle" class="sound-toggle" type="button" aria-label="Mute sound">🔇 Sound off</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: 'Practice situation 1: Choose: which one is a computing device?', opts: ['Laptop', 'Spoon', 'Chair'], answer: 0, obj: 'Identify common computing devices' },
+      { q: 'Practice situation 2: Choose: which device fits in a pocket?', opts: ['Desktop', 'Smartphone', 'Printer'], answer: 1, obj: 'Identify common computing devices' },
+      { q: 'Practice situation 3: Choose: what do we use to type letters?', opts: ['Keyboard', 'Screen', 'Speaker'], answer: 0, obj: 'Recognise computer parts' },
+      { q: 'Practice situation 4: Choose: which part shows pictures?', opts: ['Mouse', 'Monitor', 'Microphone'], answer: 1, obj: 'Recognise computer parts' },
+      { q: 'Practice situation 5: Choose: what helps move the pointer?', opts: ['Printer', 'Mouse', 'Speaker'], answer: 1, obj: 'Recognise computer parts' },
+      { q: 'Practice situation 6: Choose: which part plays sound?', opts: ['Keyboard', 'Speakers', 'Webcam'], answer: 1, obj: 'Recognise computer parts' },
+      { q: 'Practice situation 7: Choose: what should you keep away from a computer?', opts: ['Water', 'Dry hands', 'Clean desk'], answer: 0, obj: 'Handle devices safely' },
+      { q: 'Practice situation 8: Choose: how should you carry a tablet?', opts: ['Carefully with two hands', 'By the cable', 'While running'], answer: 0, obj: 'Handle devices safely' },
+      { q: 'Practice situation 9: Before cleaning a device, what should you do?', opts: ['Ask an adult', 'Pour water on it', 'Hit the keys'], answer: 0, obj: 'Use devices safely' },
+      { q: 'Practice situation 10: Choose: what is the best way to switch off a computer?', opts: ['Use the correct Shut down option', 'Pull the cable', 'Close the screen hard'], answer: 0, obj: 'Use devices safely' }
+    ];
+
+    let idx = 0;
+    let score = 0;
+    let selected = null;
+    let isMuted = true;
+
+    const fill = document.getElementById('fill');
+    const progressEl = document.getElementById('progress');
+    const questionEl = document.getElementById('question');
+    const answersEl = document.getElementById('answers');
+    const feedbackEl = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next');
+    const resultEl = document.getElementById('result');
+    const restartBtn = document.getElementById('restart');
+    const buddySpeech = document.getElementById('buddy-speech');
+    const buddyFill = document.getElementById('buddy-progress-fill');
+    const buddyStars = document.getElementById('buddy-stars');
+    const buddyProgressText = document.getElementById('buddy-progress-text');
+    const soundToggle = document.getElementById('sound-toggle');
+    const sparklesContainer = document.getElementById('sparkles');
+
+    function updateBuddyProgress() {
+      const correctAnswers = Math.floor(score / 2);
+      const progressPercent = (correctAnswers / questions.length) * 100;
+      buddyFill.style.width = Math.min(100, progressPercent) + '%';
+      buddyStars.textContent = correctAnswers;
+      buddyProgressText.textContent = Math.round(progressPercent) + '%';
+    }
+
+    function playTone(type) {
+      if (isMuted) return;
+
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type === 'correct' ? 'triangle' : 'sawtooth';
+      osc.frequency.value = type === 'correct' ? 760 : 320;
+      gain.gain.value = 0.0001;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      const now = ctx.currentTime;
+      osc.start(now);
+      gain.gain.exponentialRampToValueAtTime(0.08, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + (type === 'correct' ? 0.26 : 0.18));
+      osc.stop(now + (type === 'correct' ? 0.28 : 0.2));
+      osc.onended = () => ctx.close();
+    }
+
+    function createSparkles() {
+      sparklesContainer.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const star = document.createElement('span');
+        star.className = 'sparkle';
+        const left = 20 + Math.random() * 60;
+        const top = 20 + Math.random() * 50;
+        star.style.left = left + '%';
+        star.style.top = top + '%';
+        star.style.animationDelay = (i * 0.08) + 's';
+        sparklesContainer.appendChild(star);
+      }
+    }
+
+    function showBuddyMessage(message) {
+      buddySpeech.textContent = message;
+    }
+
+    function show() {
+      selected = null;
+      feedbackEl.textContent = '';
+      nextBtn.disabled = true;
+      resultEl.textContent = '';
+      const current = questions[idx];
+      questionEl.textContent = current.q;
+      answersEl.innerHTML = '';
+
+      current.opts.forEach((option, optionIndex) => {
+        const button = document.createElement('button');
+        button.className = 'option';
+        button.type = 'button';
+        button.textContent = option;
+        button.setAttribute('aria-label', option);
+        button.addEventListener('click', () => choose(optionIndex));
+        answersEl.appendChild(button);
+      });
+
+      progressEl.textContent = 'Question ' + (idx + 1) + ' of ' + questions.length + ' • Score ' + score + '/20';
+      fill.style.width = ((idx / questions.length) * 100) + '%';
+      showBuddyMessage('Let’s try this one together!');
+    }
+
+    function choose(optionIndex) {
+      if (selected !== null) return;
+      selected = optionIndex;
+      const current = questions[idx];
+      const buttons = [...answersEl.querySelectorAll('.option')];
+      const isCorrect = optionIndex === current.answer;
+
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === current.answer) {
+          button.classList.add('correct');
+        }
+        if (index === optionIndex && !isCorrect) {
+          button.classList.add('incorrect');
+        }
+      });
+
+      if (isCorrect) {
+        score += 2;
+        feedbackEl.textContent = 'Correct! Well done!';
+        showBuddyMessage('Amazing work! You got it!');
+        createSparkles();
+        playTone('correct');
+      } else {
+        feedbackEl.textContent = 'Good try! The correct answer is: ' + current.opts[current.answer] + '. Want another go?';
+        showBuddyMessage('Nice try! Look again and choose another answer.');
+        playTone('wrong');
+      }
+
+      updateBuddyProgress();
+      progressEl.textContent = 'Question ' + (idx + 1) + ' of ' + questions.length + ' • Score ' + score + '/20';
+      nextBtn.disabled = false;
+    }
+
+    function nextQuestion() {
+      if (selected === null) return;
+
+      idx += 1;
+      if (idx >= questions.length) {
+        const finalScore = score;
+        const percent = Math.round((finalScore / 20) * 100);
+        questionEl.textContent = 'Quiz complete!';
+        answersEl.innerHTML = '';
+        feedbackEl.textContent = 'You scored ' + finalScore + ' out of 20.';
+        progressEl.textContent = 'Completed • Score ' + finalScore + '/20';
+        fill.style.width = '100%';
+        nextBtn.disabled = true;
+        resultEl.textContent = 'Final score: ' + percent + '%';
+        if (finalScore >= 16) {
+          showBuddyMessage('Fantastic effort! You are a super learner!');
+          createSparkles();
+          playTone('correct');
+        } else if (finalScore >= 10) {
+          showBuddyMessage('Great job! You are making progress!');
+          playTone('correct');
+        } else {
+          showBuddyMessage('You can do it! Try the quiz again and keep practising.');
+          playTone('wrong');
+        }
+        updateBuddyProgress();
+        return;
+      }
+
+      show();
+    }
+
+    function restart() {
+      idx = 0;
+      score = 0;
+      selected = null;
+      resultEl.textContent = '';
+      feedbackEl.textContent = '';
+      nextBtn.disabled = true;
+      updateBuddyProgress();
+      showBuddyMessage('Hello, Little AI Explorer! Let\'s learn together!');
+      show();
+    }
+
+    soundToggle.addEventListener('click', () => {
+      isMuted = !isMuted;
+      soundToggle.textContent = isMuted ? '🔇 Sound off' : '🔊 Sound on';
+      soundToggle.setAttribute('aria-label', isMuted ? 'Turn sound on' : 'Mute sound');
+      if (!isMuted) {
+        showBuddyMessage('Sound is on! Ready to learn!');
+        playTone('correct');
+      } else {
+        showBuddyMessage('Sound is muted. Tap to turn it back on.');
+      }
+    });
+
+    nextBtn.addEventListener('click', nextQuestion);
+    restartBtn.addEventListener('click', restart);
+
+    updateBuddyProgress();
+    show();
+  </script>
+</body>
+</html>
